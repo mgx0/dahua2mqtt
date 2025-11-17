@@ -10,4 +10,4 @@ __pycache__/
 .vscode/
 *.zip
 .DS_Store
-# eventstreamer/settings.json
+eventstreamer/settings.json
