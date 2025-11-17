@@ -11,3 +11,4 @@ __pycache__/
 *.zip
 .DS_Store
 eventstreamer/settings.json
+./run.sh
