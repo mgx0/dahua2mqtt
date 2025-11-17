@@ -38,6 +38,7 @@ class DahuaEventClient:
         """Perform Digest Auth handshake manually."""
         self.session = aiohttp.ClientSession()
         logger.debug(f"Connecting to Dahua event stream at {self.host}:{self.port} with username {self.username} and password {self.password}")
+        logger.debug("Ignoring events: " + ", ".join(self.ignored_events))
         try:
             # FIRST REQUEST -> expected 401 challenge
             r1 = await self.session.get(self.url)
