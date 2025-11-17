@@ -9,6 +9,7 @@ class MultipartEventParser:
     def __init__(self, ignored_events=[]):
         self.buffer = b""
         self.logger = ColorLogger(name="DAHUA_Parser", show_time=True)
+        self.ignored_events = ignored_events
 
     def feed(self, chunk: bytes):
         self.buffer += chunk
@@ -71,7 +72,7 @@ class MultipartEventParser:
                 "data": data
             }
 
-            if code in ignored_events:
+            if code in self.ignored_events:
                 self.logger.debug(f"Ignored event {code}: {json.dumps(object, indent=4)}")
                 return None
 
