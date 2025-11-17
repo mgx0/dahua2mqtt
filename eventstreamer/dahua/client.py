@@ -80,7 +80,7 @@ class DahuaEventClient:
                 await asyncio.sleep(5)
 
     async def _read_stream(self, resp):
-        parser = MultipartEventParser()
+        parser = MultipartEventParser(self.ignored_events)
 
         async for chunk in resp.content.iter_chunked(1024):
             if not self._running:

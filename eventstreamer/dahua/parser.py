@@ -6,7 +6,7 @@ from .logger import ColorLogger
 class MultipartEventParser:
     BOUNDARY = b"--myboundary"
 
-    def __init__(self):
+    def __init__(self, ignored_events=[]):
         self.buffer = b""
         self.logger = ColorLogger(name="DAHUA_Parser", show_time=True)
 
@@ -71,7 +71,7 @@ class MultipartEventParser:
                 "data": data
             }
 
-            if code in ["CascadeDGSErrorReport", "NetMonitorAbort"]:
+            if code in ignored_events:
                 self.logger.debug(f"Ignored event {code}: {json.dumps(object, indent=4)}")
                 return None
 
