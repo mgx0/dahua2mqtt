@@ -42,18 +42,18 @@ class DahuaEventClient:
             # FIRST REQUEST -> expected 401 challenge
             r1 = await self.session.get(self.url)
             if r1.status != 401:
-                raise Exception("Expected HTTP 401 for Digest challenge")
+                raise Exception(f"Expected HTTP 401 for Digest challenge from {self.host}:{self.port} using username {self.username}")
 
             logger.debug("Received 401 challenge for Digest Auth")
 
             # SECOND REQUEST -> with Authorization header
             auth_header = self.auth.auth_header("GET", self.url, r1)
-            logger.debug("Sending authenticated request with Digest Auth")
+            logger.debug(f"Sending authenticated request with Digest Auth to {self.host}:{self.port} using username {self.username}")
 
             r2 = await self.session.get(self.url, headers={"Authorization": auth_header})
             r2.raise_for_status()
 
-            logger.info(f"Authenticated successfully against {self.url}")
+            logger.info(f"Authenticated successfully against {self.host}:{self.port} using username {self.username}")
 
             self.response = r2
             return r2
