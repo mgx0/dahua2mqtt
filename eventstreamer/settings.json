@@ -1,0 +1,19 @@
+{
+  "dahua": {
+    "host": "192.168.1.2",
+    "port": 80,
+    "username": "test",
+    "password": "password",
+    "codes": "[All]"
+  },
+  "mqtt": {
+    "host": "192.168.1.3",
+    "port": 1883,
+    "topic": "dahua/events"
+  },
+  "ignored_events": [
+    "NetMonitorAbort",
+    "CascadeDGSErrorReport"
+  ],
+  "log_level": "DEBUG"
+}
