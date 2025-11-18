@@ -11,7 +11,6 @@ from dahua.logger import ColorLogger, LoggerConfig
 log = ColorLogger("MAIN")
 
 
-
 async def main():
     # Install signal handlers using the *running* loop
     loop = asyncio.get_running_loop()

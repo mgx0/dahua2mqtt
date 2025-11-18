@@ -6,6 +6,7 @@ from .logger import ColorLogger
 
 logger = ColorLogger(name="DAHUA_Client", show_time=True)
 
+
 class DahuaEventClient:
     def __init__(
         self,
@@ -25,7 +26,7 @@ class DahuaEventClient:
         self.on_event = on_event   # async callback
         self.url = (
             f"http://{host}:{port}/cgi-bin/eventManager.cgi"
-            f"?action=attach&codes={codes}"
+            f"?action=attach&codes={codes}&heartbeat=10"
         )
 
         self.session: aiohttp.ClientSession | None = None
@@ -36,7 +37,12 @@ class DahuaEventClient:
 
     async def connect(self):
         """Perform Digest Auth handshake manually."""
-        self.session = aiohttp.ClientSession()
+        tcp_keepalive = aiohttp.TCPConnector(
+            keepalive_timeout=30,
+            force_close=False,
+        )
+
+        self.session = aiohttp.ClientSession(connector=tcp_keepalive)
         logger.debug(f"Connecting to Dahua event stream at {self.host}:{self.port} with username {self.username} and password {self.password}")
         logger.debug("Ignoring events: " + ", ".join(self.ignored_events))
         try:
@@ -65,19 +71,38 @@ class DahuaEventClient:
 
     async def run_forever(self):
         """Main reconnect loop. Stops cleanly when .close() is called."""
+
+        RECONNECT_MAX = 240  # seconds until forced reconnect
+
         while self._running:
             try:
                 logger.debug("Connecting to Dahua event stream...")
                 resp = await self.connect()
-                await self._read_stream(resp)
+
+                # Limit _read_stream to RECONNECT_MAX seconds
+                try:
+                    await asyncio.wait_for(
+                        self._read_stream(resp),
+                        timeout=RECONNECT_MAX
+                    )
+                except asyncio.TimeoutError:
+                    logger.warning(
+                        f"Forcing reconnect after {RECONNECT_MAX} seconds (timeout refresh)."
+                    )
+
             except asyncio.CancelledError:
                 logger.debug("run_forever() was cancelled")
                 break
+
             except Exception as e:
                 if not self._running:
                     break
-                logger.info(f"[ERROR] {e}, reconnecting in 5s")
-                await asyncio.sleep(5)
+                logger.info(f"[ERROR] {e}, reconnecting shortly")
+                await asyncio.sleep(1)
+
+            # small delay to avoid hammering if disconnect loop is too fast
+            await asyncio.sleep(0.2)
+
 
     async def _read_stream(self, resp):
         parser = MultipartEventParser(self.ignored_events)
