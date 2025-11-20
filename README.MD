@@ -1,10 +1,10 @@
 # Dahua Event Stream (dahua2mqtt)
 
-A Python service that connects to Dahua security cameras to stream events and forward them to an MQTT broker. This service monitors Dahua camera events in real-time and publishes them to MQTT topics for integration with home automation systems or other applications.
+A Python service that connects to Dahua security cameras and NVRs to stream events and forward them to an MQTT broker. This service monitors Dahua camera events in real-time and publishes them to MQTT topics for integration with home automation systems or other applications.
 
 ## What it does
 
-- **Event Monitoring**: Connects to Dahua cameras and listens for security events (motion detection, intrusion alerts, etc.)
+- **Event Monitoring**: Connects to Dahua devices and listens for security events (motion detection, intrusion alerts, etc.)
 - **Event Filtering**: Allows filtering of specific event codes and ignoring unwanted events
 - **MQTT Publishing**: Forwards filtered events to an MQTT broker in JSON format
 - **Graceful Shutdown**: Handles SIGTERM/SIGINT signals for clean shutdown (Docker-friendly)
@@ -128,7 +128,7 @@ The service provides colored console logging with timestamps. Log levels can be 
 
 - Due the connection to Dahua device is a HTTP (not a TCP tunnel), it times out eventually. Script is configured to close and reopen the connection after 240 seconds. Small delay (200ms) is used to prevent hammering the device REST API. Some events can be lost during reconnection.
 - Dahua can produce a really long message, which will not fit into MQTT maximum message length. Consider bumping the value in your MQTT broker config
-
+- developed on NVR4216 and NVR5216-EI
 
 ## Signal Handling
 
