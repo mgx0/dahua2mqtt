@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class LoggerConfig:
-    level = "INFO"   # global default: DEBUG / INFO / WARNING / ERROR
+    level = "INFO"
 
     LEVELS = {
         "DEBUG": 10,

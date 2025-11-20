@@ -46,14 +46,11 @@ class DahuaEventClient:
         logger.debug(f"Connecting to Dahua event stream at {self.host}:{self.port} with username {self.username} and password {self.password}")
         logger.debug("Ignoring events: " + ", ".join(self.ignored_events))
         try:
-            # FIRST REQUEST -> expected 401 challenge
             r1 = await self.session.get(self.url)
             if r1.status != 401:
                 raise Exception(f"Expected HTTP 401 for Digest challenge from {self.host}:{self.port} using username {self.username}")
 
             logger.debug("Received 401 challenge for Digest Auth")
-
-            # SECOND REQUEST -> with Authorization header
             auth_header = self.auth.auth_header("GET", self.url, r1)
             logger.debug(f"Sending authenticated request with Digest Auth to {self.host}:{self.port} using username {self.username}")
 
@@ -72,14 +69,12 @@ class DahuaEventClient:
     async def run_forever(self):
         """Main reconnect loop. Stops cleanly when .close() is called."""
 
-        RECONNECT_MAX = 240  # seconds until forced reconnect
+        RECONNECT_MAX = 240
 
         while self._running:
             try:
                 logger.debug("Connecting to Dahua event stream...")
                 resp = await self.connect()
-
-                # Limit _read_stream to RECONNECT_MAX seconds
                 try:
                     await asyncio.wait_for(
                         self._read_stream(resp),
@@ -99,8 +94,6 @@ class DahuaEventClient:
                     break
                 logger.info(f"[ERROR] {e}, reconnecting shortly")
                 await asyncio.sleep(1)
-
-            # small delay to avoid hammering if disconnect loop is too fast
             await asyncio.sleep(0.2)
 
 
@@ -122,15 +115,11 @@ class DahuaEventClient:
         logger.warning("Closing Dahua client...")
 
         self._running = False
-
-        # Cancel ongoing response stream
         if self.response:
             try:
                 await self.response.release()
             except Exception:
                 pass
-
-        # Close session if it exists
         if self.session and not self.session.closed:
             try:
                 await self.session.close()

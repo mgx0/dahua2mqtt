@@ -1,4 +1,4 @@
-# Dahua Event Stream
+# Dahua Event Stream (dahua2mqtt)
 
 A Python service that connects to Dahua security cameras to stream events and forward them to an MQTT broker. This service monitors Dahua camera events in real-time and publishes them to MQTT topics for integration with home automation systems or other applications.
 
