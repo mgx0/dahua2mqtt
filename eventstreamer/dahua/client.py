@@ -90,9 +90,13 @@ class DahuaEventClient:
         RECONNECT_MAX = 240  # Forced reconnect interval
 
         while self._running:
+            if not self._running:
+                break   # 🔥 Prevent hang
             try:
                 logger.debug("Connecting to Dahua event stream...")
                 resp = await self.connect()
+                if not self._running:
+                    break
 
                 # Launch _read_stream as task
                 self._read_task = asyncio.create_task(self._read_stream(resp))
@@ -112,6 +116,11 @@ class DahuaEventClient:
                         except asyncio.CancelledError:
                             pass
 
+                except asyncio.CancelledError:
+                    if not self._running:
+                        logger.debug("run_forever exiting after cancellation")
+                        break   # 🔥 stop loop immediately
+
             except asyncio.CancelledError:
                 logger.debug("run_forever() was cancelled")
                 break
@@ -123,6 +132,8 @@ class DahuaEventClient:
                 await asyncio.sleep(1)
 
             await asyncio.sleep(0.2)
+            if not self._running:
+                break
 
     # ----------------------------------------------------------------------
 
