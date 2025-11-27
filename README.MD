@@ -140,4 +140,5 @@ The service handles SIGTERM and SIGINT signals gracefully:
 
 This makes it suitable for use in Docker containers and systemd services.
 
+NOTE: This repository and it's content is provided as-is. It has been build for my own purposes and I cannot guarantee new feature additions due to time pressure or unavailable hardware.
 [![Buy me a coffee](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=MPFQRSJMWJXXE)
