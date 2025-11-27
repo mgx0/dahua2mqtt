@@ -128,7 +128,7 @@ The service provides colored console logging with timestamps. Log levels can be 
 
 - Due the connection to Dahua device is a HTTP (not a TCP tunnel), it times out eventually. Script is configured to close and reopen the connection after 240 seconds. Small delay (200ms) is used to prevent hammering the device REST API. Some events can be lost during reconnection.
 - Dahua can produce a really long message, which will not fit into MQTT maximum message length. Consider bumping the value in your MQTT broker config
-- developed on NVR4216 and NVR5216-EI
+- developed on VTO2311, NVR4216 and NVR5216-EI
 
 ## Signal Handling
 
