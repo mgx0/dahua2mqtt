@@ -1,0 +1,2 @@
+class ReconnectRequest(Exception):
+    pass

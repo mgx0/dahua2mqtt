@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.log
+*.tmp
+.venv/
+.idea/
+.vscode/
+*.zip
+.DS_Store
+eventstreamer/settings.json
+./run.sh
+run.sh
