@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Install minimal system dependencies for aiohttp
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
+    ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy only dependency files first (for better caching)
@@ -32,7 +32,9 @@ EXPOSE 0
 # HEALTHCHECK --interval=30s --timeout=3s \
 #     CMD python healthcheck.py || exit 1
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
+
 # Entrypoint
 CMD ["python", "main.py"]
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD /usr/local/bin/healthcheck.sh
