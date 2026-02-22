@@ -3,7 +3,7 @@ docker stop dahua-event-stream
 docker rm dahua-event-stream
 
 docker run -d --restart=unless-stopped \
-  -v "$(pwd)/eventstreamer/settings.json:/app/settings.json:ro" \
+  -v "/share/docker/data/dahua2mqtt/eventstreamer/settings.json:/app/settings.json:ro" \
   --network=host \
   --name dahua-event-stream \
   -e TZ=Europe/Amsterdam \

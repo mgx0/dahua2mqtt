@@ -50,7 +50,7 @@ async def main():
         sys.exit(1)
 
     LoggerConfig.set_level(config.get("log_level", "INFO"))
-    health_port = config.get("health_port", 8080)
+    health_port = config.get("health_port", 8083)
     
     # 2. Initialization
     hc = HealthCheck()
